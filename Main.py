@@ -26,7 +26,7 @@ class Main:
 		x,y = pos[0],pos[1]
 		data = Men.GetConDown(x,y).content
 		editing = len(data)
-		print(end="\033[47m\033[30" + " " * 64 + "\b" * 64 + data)
+		print(end="\033[47m\033[30m" + " " * 64 + "\b" * 64 + data,flush=True)
 		while True:
 			self.size = os.get_terminal_size()
 			self.tabelSize = (self.size.columns // 9 - 1,self.size.lines - 3)
@@ -36,16 +36,16 @@ class Main:
 			if   key is None:continue
 			elif key is None:continue
 			elif key == reader.key.ESC:
-				print(end=color.Fore.RESET + color.Back.RESET)
+				print(end=color.Fore.RESET + color.Back.RESET,flush=True)
 				return
 			elif key == reader.key.LEFT:
 				if editing > 0:
 					editing -=1
-					print(end=reader.key.LEFT)
+					print(end=reader.key.LEFT,flush=True)
 			elif key == reader.key.RIGHT:
 				if editing < len(data):
 					editing +=1
-					print(end=reader.key.RIGHT)
+					print(end=reader.key.RIGHT,flush=True)
 			elif key == reader.key.ENTER:
 				print(end=color.Fore.RESET + color.Back.RESET + " " * (self.tabelSize[0] * 9) + "\b" * (self.tabelSize[0] * 9))
 				if data != "":Men.addConCol(y,RC.Colum(x,data))
@@ -54,11 +54,11 @@ class Main:
 				if editing > 0:
 					data = data[:editing - 1] + data[editing:]
 					editing -= 1
-					print("\b" + data[editing:],end="  \b\b" + "\b" * (len(data) - editing))
+					print("\b" + data[editing:],end="  \b\b" + "\b" * (len(data) - editing),flush=True)
 			elif len(key) == 1 and key in " =^1234567890!\"§$%&/()={?}[]\\<|>qw°easdyxcrtzfghvbnuiojklmpQWERTZUIOPASDFGHJKLYXCVBNM@,.-+#*'~-,.;:":
 				if len(data) < 0xff:
 					data = data[:editing] + key + data[editing:]
-					print(data[editing:],end="\b" * len(data[editing + 1:]))
+					print(data[editing:],end="\b" * len(data[editing + 1:]),flush=True)
 					editing += 1
 			# else:
 			# 	print([hex(ord(d)) for d in key])
@@ -90,14 +90,15 @@ class Main:
 		else:
 			edit = str(edit)
 		print(
-			end=color.Back.GREEN + color.Fore.BLACK + edit + "\b" * len(edit) + color.Back.RESET + color.Fore.RESET
+
+			end=color.Back.GREEN + color.Fore.BLACK + edit + "\b" * len(edit) + color.Back.RESET + color.Fore.RESET,flush=True
 		)
 	
 
 	def Console(self):
 		data = ":"
 		editing = len(data)
-		print(end=color.Fore.GREEN + color.Back.BLACK + " " * 64 + "\b" * 64 + data)
+		print(end=color.Fore.GREEN + color.Back.BLACK + " " * 64 + "\b" * 64 + data,flush=True)
 		while True:
 			self.size = os.get_terminal_size()
 			self.tabelSize = (self.size.columns // 9 - 1,self.size.lines - 3)
@@ -107,18 +108,18 @@ class Main:
 			except Exception:continue
 			if key is None:continue
 			elif key == reader.key.ESC:
-				print(end=color.Fore.RESET + color.Back.RESET)
+				print(end=color.Fore.RESET + color.Back.RESET,flush=True)
 				return (False,)
 			elif key == reader.key.LEFT:
 				if editing > 0:
 					editing -=1
-					print(end=reader.key.LEFT)
+					print(end=reader.key.LEFT,flush=True)
 			elif key == reader.key.RIGHT:
 				if editing < len(data):
 					editing +=1
-					print(end=reader.key.RIGHT)
+					print(end=reader.key.RIGHT,flush=True)
 			elif key == reader.key.ENTER:
-				print(end=color.Fore.RESET + color.Back.RESET)
+				print(end=color.Fore.RESET + color.Back.RESET,flush=True)
 				if data[0:1] == ":":
 					if   data[1:3] == "s ":
 						a = Men.saveS()
@@ -138,17 +139,17 @@ class Main:
 					elif data[1:2] == "p":Men.addConCol(self.edit_tab[1],RC.Colum(self.edit_tab[0],self.copy))
 					elif data[1:2] == "q":return (True,)
 					else:
-						print(end="\a")
+						print(end="\a",flush=True)
 				return (False,)
-			elif key == reader.key.BACKSPACE2:
+			elif (key == reader.key.BACKSPACE2 and osp == "win") or (key == reader.key.BACKSPACE and osp == "lin"):
 				if editing > 0:
 					data = data[:editing - 1] + data[editing:]
 					editing -= 1
-					print("\b" + data[editing:],end="  \b\b" + "\b" * (len(data) - editing))
+					print("\b" + data[editing:],end="  \b\b" + "\b" * (len(data) - editing),flush=True)
 			elif len(key) == 1 and key in " =12345^°67890!\"§$%&/()={?}[]\\<|>qweasdyxcrtzfghvbnuiojklmpQWERTZUIOPASDFGHJKLYXCVBNM@,.-+#*'~-,.;:":
 				if len(data) < 0xff:
 					data = data[:editing] + key + data[editing:]
-					print(data[editing:],end="\b" * len(data[editing + 1:]))
+					print(data[editing:],end="\b" * len(data[editing + 1:]),flush=True)
 					editing += 1
 			# else:
 			# 	print([hex(ord(d)) for d in key])
@@ -170,7 +171,7 @@ class Main:
 					for itX in itY.content:
 						itX.prevalue = None
 				self.display()
-			elif key == reader.key.BACKSPACE2:
+			elif (key == reader.key.BACKSPACE2 and osp == "win") or (key == reader.key.BACKSPACE and osp == "lin"):
 				a = Men.GetCon(self.edit_tab[1])
 				a.rem(self.edit_tab[0])
 				if len(a.content) == 0:
@@ -178,18 +179,18 @@ class Main:
 				self.display()
 
 			elif key == reader.key.ENTER :
-				print(end=f"\033[{self.tabelSize[1] + 2};1H > > > > ")
+				print(end=f"\033[{self.tabelSize[1] + 2};1H > > > > ",flush=True)
 				self.editTab(self.edit_tab)
 				print(end=f"\033[{str(self.edit_tab[1] + 1)};{str(self.edit_tab[0] + 1)}H")
 				self.display()
 			
 			elif key == ":":
-				print(end=f"\033[{self.tabelSize[1] + 2};1HConsole >")
+				print(end=f"\033[{self.tabelSize[1] + 2};1HConsole >",flush=True)
 				a = self.Console()
 				print(end=f"\033[{str(self.edit_tab[1] + 1)};{str(self.edit_tab[0] + 1)}H")
 				self.display()
 				if a[0]:
-					print(f"\033[{self.size[1]};1H")
+					print(f"\033[{self.size[1]};1H",flush=True)
 					return
 
 			elif key == reader.key.UP   :
